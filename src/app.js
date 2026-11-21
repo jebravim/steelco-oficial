@@ -172,10 +172,13 @@ function setAuthMode(mode) {
 }
 
 async function getAuthToken() {
-  const { data, error } = await authClient.getSession();
-  const token = data?.session?.token;
-  if (error || !token) throw new Error("Não foi possível validar a sessão.");
-  return token;
+  const tokenResult = await authClient.token();
+  if (!tokenResult.error && tokenResult.data?.token) return tokenResult.data.token;
+
+  const sessionResult = await authClient.getSession();
+  const sessionToken = sessionResult.data?.session?.token;
+  if (sessionResult.error || !sessionToken) throw new Error("Não foi possível validar a sessão.");
+  return sessionToken;
 }
 
 async function verifyEmployee(user) {
