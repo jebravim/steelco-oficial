@@ -274,6 +274,7 @@ function authErrorMessage(error, fallback) {
   if (message.includes("invalid") || message.includes("credential")) return "E-mail ou senha incorretos. Se necessário, use “Esqueci minha senha”.";
   if (message.includes("already") || message.includes("exist")) return "Este e-mail já possui uma conta. Use a opção Entrar.";
   if (message.includes("password")) return "A senha precisa ter pelo menos 8 caracteres.";
+  if (message.includes("validar a sessão")) return "O login foi aceito, mas o aplicativo não conseguiu concluir a sessão. Feche o PWA, abra novamente e tente entrar.";
   return fallback;
 }
 
@@ -512,7 +513,7 @@ document.addEventListener("keydown", (event) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {
+    navigator.serviceWorker.register("./sw.js?v=7").catch(() => {
       showPwaStatus("O modo offline não pôde ser ativado neste navegador.");
     });
   });
