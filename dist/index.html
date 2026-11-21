@@ -256,6 +256,7 @@
             </div>
             <p class="field-error" id="signInError" role="alert"></p>
             <button class="calculate-button" type="submit">Entrar na área interna</button>
+            <button class="text-button" id="showPasswordReset" type="button">Esqueci minha senha</button>
           </form>
 
           <form id="signUpForm" novalidate hidden>
@@ -274,6 +275,35 @@
             <p class="field-hint">A conta só terá acesso se o e-mail estiver na lista de funcionários.</p>
             <p class="field-error" id="signUpError" role="alert"></p>
             <button class="calculate-button" type="submit">Criar meu acesso</button>
+          </form>
+        </div>
+
+        <div class="password-reset-panel" id="passwordResetPanel" hidden>
+          <button class="back-button" id="backToSignIn" type="button">Voltar para o login</button>
+          <h3>Recuperar senha</h3>
+          <p id="passwordResetIntro">Informe seu e-mail autorizado para receber um código de recuperação.</p>
+
+          <form id="requestResetForm" novalidate>
+            <label for="resetEmail">E-mail</label>
+            <div class="input-shell compact-input">
+              <input id="resetEmail" name="email" type="email" autocomplete="email" required placeholder="nome@empresa.com" />
+            </div>
+            <p class="field-error" id="requestResetError" role="alert"></p>
+            <button class="calculate-button" type="submit">Enviar código</button>
+          </form>
+
+          <form id="confirmResetForm" novalidate hidden>
+            <div class="reset-sent-message" role="status">Código enviado. Confira também a caixa de spam.</div>
+            <label for="resetCode">Código recebido</label>
+            <div class="input-shell compact-input code-input">
+              <input id="resetCode" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required placeholder="Digite o código" />
+            </div>
+            <label for="newPassword">Nova senha</label>
+            <div class="input-shell compact-input">
+              <input id="newPassword" name="password" type="password" minlength="8" autocomplete="new-password" required placeholder="Mínimo de 8 caracteres" />
+            </div>
+            <p class="field-error" id="confirmResetError" role="alert"></p>
+            <button class="calculate-button" type="submit">Salvar nova senha</button>
           </form>
         </div>
 

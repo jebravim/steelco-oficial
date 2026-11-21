@@ -544,10 +544,15 @@ label {
 .modal-backdrop[hidden],
 .saved-feedback[hidden],
 .auth-panel[hidden],
+.password-reset-panel[hidden],
 .employee-panel[hidden],
 .employee-loading[hidden],
 .unauthorized-panel[hidden],
 .auth-panel form[hidden] {
+  display: none;
+}
+
+.password-reset-panel form[hidden] {
   display: none;
 }
 
@@ -770,6 +775,58 @@ footer > a:last-child {
 
 .auth-panel .compact-input + label {
   margin-top: 16px;
+}
+
+.text-button,
+.back-button {
+  background: transparent;
+  border: 0;
+  color: var(--green);
+  cursor: pointer;
+  font-weight: 700;
+  padding: 10px 0;
+}
+
+.text-button {
+  display: block;
+  margin: 10px auto 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.back-button {
+  margin: 20px 0 10px;
+}
+
+.password-reset-panel h3 {
+  font-size: 25px;
+  margin: 4px 0 8px;
+}
+
+.password-reset-panel > p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.password-reset-panel form {
+  margin-top: 22px;
+}
+
+.password-reset-panel .compact-input + label {
+  margin-top: 16px;
+}
+
+.reset-sent-message {
+  background: rgba(29, 91, 61, 0.08);
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding: 13px 14px;
+}
+
+.code-input input {
+  letter-spacing: .16em;
 }
 
 .compact-input {

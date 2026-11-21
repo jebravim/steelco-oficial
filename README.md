@@ -26,6 +26,8 @@ vercel --prod
 
 O navegador carrega o preço público pela API `/api/price`. Somente uma sessão válida do Neon Auth cujo e-mail esteja ativo em `public.employee_access` pode atualizar esse valor. O registro oficial fica em `public.pricing_settings`; o `localStorage` é usado apenas como cache offline de leitura.
 
+O login oferece recuperação de senha por código enviado ao e-mail cadastrado. Depois da confirmação do código, o funcionário pode definir uma nova senha sem intervenção administrativa.
+
 As variáveis de ambiente necessárias na Vercel são:
 
 - `DATABASE_URL`: conexão Postgres agrupada do projeto Steel & Co. Oficial.

@@ -18,8 +18,11 @@ const elements = {
   area: document.querySelector("#area"),
   areaError: document.querySelector("#areaError"),
   authPanel: document.querySelector("#authPanel"),
+  backToSignIn: document.querySelector("#backToSignIn"),
   calculateButton: document.querySelector("#calculateButton"),
   closeEmployee: document.querySelector("#closeEmployee"),
+  confirmResetError: document.querySelector("#confirmResetError"),
+  confirmResetForm: document.querySelector("#confirmResetForm"),
   editEstimate: document.querySelector("#editEstimate"),
   employeeIdentity: document.querySelector("#employeeIdentity"),
   employeeLoading: document.querySelector("#employeeLoading"),
@@ -31,16 +34,23 @@ const elements = {
   formulaPrice: document.querySelector("#formulaPrice"),
   heroMetric: document.querySelector("#heroMetric"),
   installApp: document.querySelector("#installApp"),
+  newPassword: document.querySelector("#newPassword"),
   openEmployee: document.querySelector("#openEmployee"),
+  passwordResetPanel: document.querySelector("#passwordResetPanel"),
   priceError: document.querySelector("#priceError"),
   priceForm: document.querySelector("#priceForm"),
   priceStatus: document.querySelector("#priceStatus"),
   publicPrice: document.querySelector("#publicPrice"),
   pwaStatus: document.querySelector("#pwaStatus"),
+  requestResetError: document.querySelector("#requestResetError"),
+  requestResetForm: document.querySelector("#requestResetForm"),
+  resetCode: document.querySelector("#resetCode"),
+  resetEmail: document.querySelector("#resetEmail"),
   resultTotal: document.querySelector("#resultTotal"),
   savedFeedback: document.querySelector("#savedFeedback"),
   showSignIn: document.querySelector("#showSignIn"),
   showSignUp: document.querySelector("#showSignUp"),
+  showPasswordReset: document.querySelector("#showPasswordReset"),
   signInEmail: document.querySelector("#signInEmail"),
   signInError: document.querySelector("#signInError"),
   signInForm: document.querySelector("#signInForm"),
@@ -143,6 +153,7 @@ async function loadPrice() {
 function setEmployeeView(view) {
   elements.employeeLoading.hidden = view !== "loading";
   elements.authPanel.hidden = view !== "auth";
+  elements.passwordResetPanel.hidden = view !== "reset";
   elements.employeePanel.hidden = view !== "employee";
   elements.unauthorizedPanel.hidden = view !== "unauthorized";
 }
@@ -256,10 +267,27 @@ function setFormPending(form, pending) {
 
 function authErrorMessage(error, fallback) {
   const message = String(error?.message || "").toLowerCase();
-  if (message.includes("invalid") || message.includes("credential")) return "E-mail ou senha incorretos.";
+  if (message.includes("invalid") || message.includes("credential")) return "E-mail ou senha incorretos. Se necessário, use “Esqueci minha senha”.";
   if (message.includes("already") || message.includes("exist")) return "Este e-mail já possui uma conta. Use a opção Entrar.";
   if (message.includes("password")) return "A senha precisa ter pelo menos 8 caracteres.";
   return fallback;
+}
+
+function openPasswordReset() {
+  elements.requestResetError.textContent = "";
+  elements.confirmResetError.textContent = "";
+  elements.requestResetForm.hidden = false;
+  elements.confirmResetForm.hidden = true;
+  elements.resetCode.value = "";
+  elements.newPassword.value = "";
+  if (elements.signInEmail.value.trim()) elements.resetEmail.value = elements.signInEmail.value.trim();
+  setEmployeeView("reset");
+  window.setTimeout(() => elements.resetEmail.focus(), 20);
+}
+
+function backToSignIn() {
+  setEmployeeView("auth");
+  setAuthMode("signin");
 }
 
 elements.estimateForm.addEventListener("submit", (event) => {
@@ -346,6 +374,56 @@ elements.signUpForm.addEventListener("submit", async (event) => {
   }
 });
 
+elements.requestResetForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  elements.requestResetError.textContent = "";
+  const email = elements.resetEmail.value.trim().toLowerCase();
+  if (!email) {
+    elements.requestResetError.textContent = "Informe seu e-mail.";
+    return;
+  }
+
+  setFormPending(elements.requestResetForm, true);
+  try {
+    const { error } = await authClient.emailOtp.requestPasswordReset({ email });
+    if (error) throw error;
+    elements.requestResetForm.hidden = true;
+    elements.confirmResetForm.hidden = false;
+    window.setTimeout(() => elements.resetCode.focus(), 20);
+  } catch {
+    elements.requestResetError.textContent = "Não foi possível enviar o código agora. Tente novamente em instantes.";
+  } finally {
+    setFormPending(elements.requestResetForm, false);
+  }
+});
+
+elements.confirmResetForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  elements.confirmResetError.textContent = "";
+  const email = elements.resetEmail.value.trim().toLowerCase();
+  const otp = elements.resetCode.value.trim();
+  const password = elements.newPassword.value;
+
+  if (!otp || password.length < 8) {
+    elements.confirmResetError.textContent = "Informe o código recebido e uma senha com pelo menos 8 caracteres.";
+    return;
+  }
+
+  setFormPending(elements.confirmResetForm, true);
+  try {
+    const { error } = await authClient.emailOtp.resetPassword({ email, otp, password });
+    if (error) throw error;
+    elements.signInEmail.value = email;
+    elements.signInPassword.value = "";
+    backToSignIn();
+    showPwaStatus("Senha alterada. Entre com a nova senha.");
+  } catch {
+    elements.confirmResetError.textContent = "Código inválido ou expirado. Solicite um novo código e tente novamente.";
+  } finally {
+    setFormPending(elements.confirmResetForm, false);
+  }
+});
+
 elements.priceForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   elements.priceError.textContent = "";
@@ -406,6 +484,8 @@ async function signOutAndReset() {
 
 elements.showSignIn.addEventListener("click", () => setAuthMode("signin"));
 elements.showSignUp.addEventListener("click", () => setAuthMode("signup"));
+elements.showPasswordReset.addEventListener("click", openPasswordReset);
+elements.backToSignIn.addEventListener("click", backToSignIn);
 elements.signOutButton.addEventListener("click", signOutAndReset);
 elements.unauthorizedSignOut.addEventListener("click", signOutAndReset);
 
