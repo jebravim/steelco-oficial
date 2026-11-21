@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1d5b3d" />
+    <title>Steel & Co. | Sem conexão</title>
+    <style>
+      :root { color-scheme: light; font-family: system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body { align-items: center; background: #f4f6f2; color: #101713; display: flex; justify-content: center; margin: 0; min-height: 100vh; padding: 24px; }
+      main { background: #fff; border-top: 5px solid #b9e54b; box-shadow: 0 24px 70px rgba(13,36,24,.14); max-width: 520px; padding: 40px; width: 100%; }
+      .mark { display: grid; gap: 4px; margin-bottom: 30px; transform: skewY(-9deg); width: 38px; }
+      .mark span { background: #1d5b3d; display: block; height: 7px; }
+      .mark span:nth-child(2) { margin-left: 8px; }
+      .mark span:nth-child(3) { margin-left: 16px; }
+      h1 { font-size: clamp(32px, 8vw, 48px); letter-spacing: -.05em; line-height: 1.05; margin: 0 0 18px; }
+      p { color: #5e6962; font-size: 17px; line-height: 1.6; }
+      button { background: #1d5b3d; border: 0; border-radius: 3px; color: #fff; cursor: pointer; font-size: 16px; font-weight: 700; margin-top: 14px; min-height: 50px; padding: 0 22px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <h1>Você está sem conexão.</h1>
+      <p>O aplicativo Steel &amp; Co. já está no seu dispositivo. Reconecte-se para atualizar o preço por m² e consultar o conteúdo mais recente.</p>
+      <button type="button" onclick="location.reload()">Tentar novamente</button>
+    </main>
+  </body>
+</html>

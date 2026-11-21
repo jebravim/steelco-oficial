@@ -1,0 +1,22 @@
+{
+  "name": "steelco-orcamento",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/app.js --bundle --format=iife --platform=browser --target=es2020 --minify --outfile=dist/app.js",
+    "check": "node --check api/price.js && node --check api/employee.js && node --check lib/auth.js && node --check lib/database.js"
+  },
+  "dependencies": {
+    "@neon/auth": "latest",
+    "@vercel/functions": "latest",
+    "jose": "latest",
+    "pg": "latest"
+  },
+  "devDependencies": {
+    "esbuild": "latest"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1d5b3d" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Steel & Co." />
+    <meta
+      name="description"
+      content="Calcule uma estimativa para sua construção em steel frame com a Steel & Co."
+    />
+    <title>Steel & Co. | Construção inteligente</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#inicio" aria-label="Steel & Co. — início">
+        <img class="brand-logo" src="./logo-steelco-header.png" alt="Steel & Co. — Empreendimentos e Construções" />
+      </a>
+
+      <nav aria-label="Navegação principal">
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#calculadora">Calcular projeto</a>
+      </nav>
+
+      <button class="employee-link" id="openEmployee" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm-7 16c0-3.3 3.1-6 7-6s7 2.7 7 6v1H5v-1Z" />
+        </svg>
+        Área do funcionário
+      </button>
+
+      <button class="install-button" id="installApp" type="button" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v3h14v-3" />
+        </svg>
+        Instalar app
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-copy">
+          <div class="eyebrow"><span></span> Construção a seco, decisão inteligente</div>
+          <h1>Sua obra começa com um cálculo <em>mais claro.</em></h1>
+          <p>
+            Informe a metragem do seu projeto e veja uma estimativa inicial para construir
+            com steel frame. Simples, rápido e sem letras miúdas.
+          </p>
+          <a class="primary-cta" href="#calculadora">Calcular meu projeto</a>
+
+          <div class="hero-note">
+            <span class="note-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></svg>
+            </span>
+            <span><strong>Cálculo transparente</strong> baseado na área × valor atual por m²</span>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Ilustração de uma construção em steel frame">
+          <div class="visual-grid"></div>
+          <div class="metric-card metric-top">
+            <span>ESTRUTURA</span>
+            <strong>Aço galvanizado</strong>
+          </div>
+          <svg class="house-frame" viewBox="0 0 720 520" role="img" aria-label="Estrutura de uma casa em aço">
+            <defs>
+              <linearGradient id="steel" x1="0" x2="1">
+                <stop offset="0" stop-color="#dce5e0" />
+                <stop offset="0.52" stop-color="#ffffff" />
+                <stop offset="1" stop-color="#9eaaa4" />
+              </linearGradient>
+              <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#385e4b" stop-opacity=".9" />
+                <stop offset="1" stop-color="#13241c" stop-opacity=".98" />
+              </linearGradient>
+            </defs>
+            <path class="ground" d="M74 440h574" />
+            <path class="shadow" d="m137 427 403 1 96 32H91z" />
+            <path class="roof" d="M99 224 336 82l274 145" />
+            <path class="roof roof-inner" d="M133 226 337 104l237 124" />
+            <g class="beams">
+              <path d="M119 218v211M174 187v242M229 154v275M284 121v308M337 93v336M392 122v307M447 154v275M502 183v246M557 213v216M605 227v202" />
+              <path d="M117 229h488M117 294h488M117 361h488M117 428h488" />
+              <path d="M119 294 229 154M174 294l110-173M229 294 337 93M337 93l110 201M392 122l110 172M447 154l110 140M502 183l103 111" />
+            </g>
+            <rect class="glass" x="176" y="294" width="163" height="134" rx="2" />
+            <path class="glass-line" d="M257.5 294v134M176 361h163" />
+            <rect class="door" x="447" y="295" width="91" height="133" rx="2" />
+            <path class="door-line" d="M447 361h91" />
+          </svg>
+          <div class="metric-card metric-bottom">
+            <span>SEU PROJETO</span>
+            <strong id="heroMetric">Pronto para calcular</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="process" id="como-funciona">
+        <div class="section-heading">
+          <span>DA IDEIA AO PRIMEIRO NÚMERO</span>
+          <h2>Uma estimativa em três passos.</h2>
+        </div>
+        <div class="process-grid">
+          <article>
+            <span class="process-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 19V5h16v14H4Zm4 0V9m8 10v-6M4 9h16" /></svg>
+            </span>
+            <div>
+              <h3>Informe a área</h3>
+              <p>Digite a metragem construída prevista para o seu projeto.</p>
+            </div>
+          </article>
+          <article>
+            <span class="process-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5C7 5.6 9.1 5 12 5s5 1 5 3-2 3-5 3-5 1-5 3 2.2 5 5 5 5-.7 5-2.5" /></svg>
+            </span>
+            <div>
+              <h3>Veja o valor atual</h3>
+              <p>O preço por m² é definido e atualizado pela equipe Steel &amp; Co.</p>
+            </div>
+          </article>
+          <article>
+            <span class="process-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6V3Zm3 6h6m-6 4h6m-6 4h4" /></svg>
+            </span>
+            <div>
+              <h3>Receba a estimativa</h3>
+              <p>Confira o cálculo detalhado e use-o como ponto de partida.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="calculator-section" id="calculadora">
+        <div class="calculator-intro">
+          <span class="section-kicker">CALCULADORA STEEL &amp; CO.</span>
+          <h2>Qual o tamanho do seu próximo projeto?</h2>
+          <p>
+            Preencha a área total que pretende construir. O resultado é uma estimativa inicial;
+            o orçamento final depende das especificações do projeto.
+          </p>
+          <div class="price-status" id="priceStatus" aria-live="polite">
+            <span class="status-dot"></span>
+            <div>
+              <small>VALOR DO METRO QUADRADO</small>
+              <strong id="publicPrice">Aguardando configuração</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="calculator-card">
+          <form id="estimateForm" novalidate>
+            <label for="area">Área total da construção</label>
+            <div class="input-shell">
+              <input
+                id="area"
+                name="area"
+                type="text"
+                inputmode="decimal"
+                autocomplete="off"
+                placeholder="Ex.: 120"
+                aria-describedby="areaHint areaError"
+              />
+              <span>m²</span>
+            </div>
+            <p class="field-hint" id="areaHint">Considere a soma de todos os pavimentos.</p>
+            <p class="field-error" id="areaError" role="alert"></p>
+            <button class="calculate-button" id="calculateButton" type="submit">
+              Calcular estimativa
+            </button>
+          </form>
+
+          <div class="estimate-result" id="estimateResult" hidden aria-live="polite">
+            <div class="result-topline">
+              <span>ESTIMATIVA INICIAL</span>
+              <button type="button" id="editEstimate">Editar metragem</button>
+            </div>
+            <strong class="result-total" id="resultTotal">R$ 0,00</strong>
+            <div class="formula-row">
+              <span id="formulaArea">0 m²</span>
+              <span aria-hidden="true">×</span>
+              <span id="formulaPrice">R$ 0,00 / m²</span>
+            </div>
+            <div class="result-divider"></div>
+            <p>
+              Este valor é uma referência. Acabamentos, fundação, instalações e particularidades
+              do terreno serão avaliados no orçamento técnico.
+            </p>
+            <a
+              class="instagram-button"
+              href="https://www.instagram.com/steelecooficial"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Conversar pelo Instagram
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand footer-brand" href="#inicio">
+        <img class="brand-logo" src="./logo-steelco-header.png" alt="Steel & Co. — Empreendimentos e Construções" />
+      </a>
+      <p>Construção inteligente começa com informação clara.</p>
+      <a href="https://www.instagram.com/steelecooficial" target="_blank" rel="noreferrer">
+        @steelecooficial
+      </a>
+    </footer>
+
+    <div class="modal-backdrop" id="employeeModal" hidden>
+      <section class="employee-modal" role="dialog" aria-modal="true" aria-labelledby="employeeTitle">
+        <button class="close-button" id="closeEmployee" type="button" aria-label="Fechar área do funcionário">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        <div class="modal-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm-7 16c0-3.3 3.1-6 7-6s7 2.7 7 6v1H5v-1Z" /></svg>
+        </div>
+        <span class="section-kicker">ÁREA INTERNA PROTEGIDA</span>
+        <h2 id="employeeTitle">Acesso da equipe</h2>
+        <p>Somente contas autorizadas podem consultar e alterar o valor oficial do m².</p>
+
+        <div class="employee-loading" id="employeeLoading" role="status">
+          <span class="loading-spinner" aria-hidden="true"></span>
+          Verificando acesso…
+        </div>
+
+        <div class="auth-panel" id="authPanel" hidden>
+          <div class="auth-tabs" role="tablist" aria-label="Tipo de acesso">
+            <button class="active" id="showSignIn" type="button" role="tab" aria-selected="true">Entrar</button>
+            <button id="showSignUp" type="button" role="tab" aria-selected="false">Primeiro acesso</button>
+          </div>
+
+          <form id="signInForm" novalidate>
+            <label for="signInEmail">E-mail corporativo</label>
+            <div class="input-shell compact-input">
+              <input id="signInEmail" name="email" type="email" autocomplete="email" required placeholder="nome@empresa.com" />
+            </div>
+            <label for="signInPassword">Senha</label>
+            <div class="input-shell compact-input">
+              <input id="signInPassword" name="password" type="password" autocomplete="current-password" required placeholder="Sua senha" />
+            </div>
+            <p class="field-error" id="signInError" role="alert"></p>
+            <button class="calculate-button" type="submit">Entrar na área interna</button>
+          </form>
+
+          <form id="signUpForm" novalidate hidden>
+            <label for="signUpName">Nome</label>
+            <div class="input-shell compact-input">
+              <input id="signUpName" name="name" type="text" autocomplete="name" required placeholder="Seu nome" />
+            </div>
+            <label for="signUpEmail">E-mail autorizado</label>
+            <div class="input-shell compact-input">
+              <input id="signUpEmail" name="email" type="email" autocomplete="email" required placeholder="nome@empresa.com" />
+            </div>
+            <label for="signUpPassword">Crie uma senha</label>
+            <div class="input-shell compact-input">
+              <input id="signUpPassword" name="password" type="password" minlength="8" autocomplete="new-password" required placeholder="Mínimo de 8 caracteres" />
+            </div>
+            <p class="field-hint">A conta só terá acesso se o e-mail estiver na lista de funcionários.</p>
+            <p class="field-error" id="signUpError" role="alert"></p>
+            <button class="calculate-button" type="submit">Criar meu acesso</button>
+          </form>
+        </div>
+
+        <div class="employee-panel" id="employeePanel" hidden>
+          <div class="employee-session">
+            <div>
+              <small>FUNCIONÁRIO CONECTADO</small>
+              <strong id="employeeIdentity"></strong>
+            </div>
+            <button id="signOutButton" type="button">Sair</button>
+          </div>
+
+          <form id="priceForm" novalidate>
+            <label for="squareMeterPrice">Valor oficial por metro quadrado</label>
+            <div class="input-shell price-input">
+              <span>R$</span>
+              <input
+                id="squareMeterPrice"
+                name="squareMeterPrice"
+                type="text"
+                inputmode="decimal"
+                autocomplete="off"
+                placeholder="Ex.: 3.500,00"
+                aria-describedby="priceError"
+              />
+              <span>/ m²</span>
+            </div>
+            <p class="field-error" id="priceError" role="alert"></p>
+            <button class="calculate-button" type="submit">Salvar novo valor</button>
+          </form>
+
+          <div class="saved-feedback" id="savedFeedback" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>
+            Valor atualizado para todos os clientes.
+          </div>
+          <p class="storage-note">
+            O valor fica salvo no banco da Steel &amp; Co. e será usado em qualquer dispositivo.
+          </p>
+        </div>
+
+        <div class="unauthorized-panel" id="unauthorizedPanel" hidden>
+          <strong>Acesso não autorizado</strong>
+          <p id="unauthorizedMessage">Esta conta não está cadastrada como funcionário.</p>
+          <button class="secondary-button" id="unauthorizedSignOut" type="button">Entrar com outra conta</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="pwa-toast" id="pwaStatus" role="status" aria-live="polite" hidden></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
