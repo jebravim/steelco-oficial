@@ -639,11 +639,6 @@ footer > a[href*="instagram.com"] {
   font-weight: 700;
 }
 
-.app-version {
-  color: #7f8a84;
-  font-size: 13px;
-}
-
 .footer-brand {
   color: var(--white);
 }
