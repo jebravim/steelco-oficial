@@ -72,6 +72,7 @@ let priceState = "loading";
 let lastFocusedElement = null;
 let deferredInstallPrompt = null;
 let pwaToastTimer = null;
+let activeAuthToken = null;
 
 function parseBrazilianNumber(value) {
   const cleaned = String(value)
@@ -172,16 +173,37 @@ function setAuthMode(mode) {
 }
 
 async function getAuthToken() {
+  if (isTokenFresh(activeAuthToken)) return activeAuthToken;
+
   const tokenResult = await authClient.token();
-  if (!tokenResult.error && tokenResult.data?.token) return tokenResult.data.token;
+  if (!tokenResult.error && tokenResult.data?.token) {
+    activeAuthToken = tokenResult.data.token;
+    return activeAuthToken;
+  }
 
   const sessionResult = await authClient.getSession();
   const sessionToken = sessionResult.data?.session?.token;
   if (sessionResult.error || !sessionToken) throw new Error("Não foi possível validar a sessão.");
-  return sessionToken;
+  activeAuthToken = sessionToken;
+  return activeAuthToken;
 }
 
-async function verifyEmployee(user) {
+function isTokenFresh(token) {
+  if (!token) return false;
+
+  try {
+    const payloadPart = token.split(".")[1];
+    const normalized = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+    const payload = JSON.parse(atob(padded));
+    return Number(payload.exp) * 1000 > Date.now() + 30_000;
+  } catch {
+    return false;
+  }
+}
+
+async function verifyEmployee(user, loginToken = null) {
+  if (isTokenFresh(loginToken)) activeAuthToken = loginToken;
   const token = await getAuthToken();
   const response = await fetch("/api/employee", {
     headers: {
@@ -217,7 +239,7 @@ async function refreshEmployeeView() {
       return;
     }
 
-    await verifyEmployee(user);
+    await verifyEmployee(user, data.session?.token);
   } catch (error) {
     if (error.status === 403) {
       elements.unauthorizedMessage.textContent = error.message;
@@ -335,7 +357,7 @@ elements.signInForm.addEventListener("submit", async (event) => {
   try {
     const { data, error } = await authClient.signIn.email({ email, password });
     if (error || !data?.user) throw error || new Error("Não foi possível entrar.");
-    await verifyEmployee(data.user);
+    await verifyEmployee(data.user, data.session?.token);
     elements.signInPassword.value = "";
   } catch (error) {
     if (error?.status === 403) {
@@ -365,7 +387,7 @@ elements.signUpForm.addEventListener("submit", async (event) => {
   try {
     const { data, error } = await authClient.signUp.email({ name, email, password });
     if (error || !data?.user) throw error || new Error("Não foi possível criar a conta.");
-    await verifyEmployee(data.user);
+    await verifyEmployee(data.user, data.session?.token);
     elements.signUpPassword.value = "";
   } catch (error) {
     if (error?.status === 403) {
@@ -480,6 +502,7 @@ elements.priceForm.addEventListener("submit", async (event) => {
 });
 
 async function signOutAndReset() {
+  activeAuthToken = null;
   await authClient.signOut().catch(() => {});
   elements.signInPassword.value = "";
   elements.signUpPassword.value = "";
@@ -513,7 +536,7 @@ document.addEventListener("keydown", (event) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=7").catch(() => {
+    navigator.serviceWorker.register("./sw.js?v=8").catch(() => {
       showPwaStatus("O modo offline não pôde ser ativado neste navegador.");
     });
   });

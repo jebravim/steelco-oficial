@@ -633,10 +633,15 @@ footer p {
   margin: 0;
 }
 
-footer > a:last-child {
+footer > a[href*="instagram.com"] {
   color: var(--lime);
   font-size: 14px;
   font-weight: 700;
+}
+
+.app-version {
+  color: #7f8a84;
+  font-size: 13px;
 }
 
 .footer-brand {

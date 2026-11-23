@@ -3,7 +3,7 @@
   "short_name": "Steel & Co.",
   "description": "Calcule uma estimativa para sua construção em steel frame.",
   "id": "/",
-  "start_url": "/",
+  "start_url": "/?pwa=8",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
