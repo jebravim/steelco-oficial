@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-build="10">
+<html lang="pt-BR" data-build="11">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +13,7 @@
       content="Calcule uma estimativa para sua construção em steel frame com a Steel & Co."
     />
     <title>Steel & Co. | Construção inteligente</title>
-    <link rel="manifest" href="./manifest.webmanifest?v=10" />
+    <link rel="manifest" href="./manifest.webmanifest?v=11" />
     <link rel="icon" href="./icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,7 +22,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=11" />
   </head>
   <body>
     <header class="site-header">
@@ -30,24 +30,26 @@
         <img class="brand-logo" src="./logo-steelco-header.png" alt="Steel & Co. — Empreendimentos e Construções" />
       </a>
 
-      <nav aria-label="Navegação principal">
-        <a href="#como-funciona">Como funciona</a>
-        <a href="#calculadora">Calcular projeto</a>
-      </nav>
+      <div class="header-actions">
+        <nav aria-label="Navegação principal">
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#calculadora">Calcular projeto</a>
+        </nav>
 
-      <button class="employee-link" id="openEmployee" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm-7 16c0-3.3 3.1-6 7-6s7 2.7 7 6v1H5v-1Z" />
-        </svg>
-        Área do funcionário
-      </button>
+        <button class="employee-link" id="openEmployee" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm-7 16c0-3.3 3.1-6 7-6s7 2.7 7 6v1H5v-1Z" />
+          </svg>
+          Área do funcionário
+        </button>
 
-      <button class="install-button" id="installApp" type="button" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v3h14v-3" />
-        </svg>
-        Instalar app
-      </button>
+        <button class="install-button" id="installApp" type="button" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v3h14v-3" />
+          </svg>
+          Instalar app
+        </button>
+      </div>
     </header>
 
     <main>
@@ -354,6 +356,6 @@
 
     <div class="pwa-toast" id="pwaStatus" role="status" aria-live="polite" hidden></div>
 
-    <script src="./app.js?v=10"></script>
+    <script src="./app.js?v=11"></script>
   </body>
 </html>
