@@ -1,10 +1,10 @@
-const CACHE_NAME = "steelco-pwa-v8";
+const CACHE_NAME = "steelco-pwa-v9";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/styles.css",
-  "/app.js?v=8",
-  "/manifest.webmanifest?v=8",
+  "/app.js?v=9",
+  "/manifest.webmanifest?v=9",
   "/icon-192.png",
   "/icon-512.png",
   "/logo-steelco-header.png",

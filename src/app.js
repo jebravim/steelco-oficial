@@ -172,6 +172,12 @@ function setAuthMode(mode) {
   window.setTimeout(() => (isSignIn ? elements.signInEmail : elements.signUpName).focus(), 20);
 }
 
+function showEmployee(employee, fallbackEmail = "") {
+  elements.employeeIdentity.textContent = employee?.name || employee?.email || fallbackEmail;
+  setEmployeeView("employee");
+  window.setTimeout(() => elements.squareMeterPrice.focus(), 20);
+}
+
 async function getAuthToken() {
   if (isTokenFresh(activeAuthToken)) return activeAuthToken;
 
@@ -220,9 +226,7 @@ async function verifyEmployee(user, loginToken = null) {
     throw error;
   }
 
-  elements.employeeIdentity.textContent = data.employee.name || data.employee.email || user.email;
-  setEmployeeView("employee");
-  window.setTimeout(() => elements.squareMeterPrice.focus(), 20);
+  showEmployee(data.employee, user.email);
 }
 
 async function refreshEmployeeView() {
@@ -355,9 +359,23 @@ elements.signInForm.addEventListener("submit", async (event) => {
 
   setFormPending(elements.signInForm, true);
   try {
-    const { data, error } = await authClient.signIn.email({ email, password });
-    if (error || !data?.user) throw error || new Error("Não foi possível entrar.");
-    await verifyEmployee(data.user, data.session?.token);
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (!response.ok || !data?.token || !data?.employee) {
+      const error = new Error(data?.error || "Não foi possível entrar.");
+      error.status = response.status;
+      throw error;
+    }
+
+    activeAuthToken = data.token;
+    showEmployee(data.employee, email);
     elements.signInPassword.value = "";
   } catch (error) {
     if (error?.status === 403) {
@@ -536,7 +554,7 @@ document.addEventListener("keydown", (event) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=8").catch(() => {
+    navigator.serviceWorker.register("./sw.js?v=9").catch(() => {
       showPwaStatus("O modo offline não pôde ser ativado neste navegador.");
     });
   });
