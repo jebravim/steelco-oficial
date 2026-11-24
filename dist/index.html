@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-build="11">
+<html lang="pt-BR" data-build="12">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +13,7 @@
       content="Calcule uma estimativa para sua construção em steel frame com a Steel & Co."
     />
     <title>Steel & Co. | Construção inteligente</title>
-    <link rel="manifest" href="./manifest.webmanifest?v=11" />
+    <link rel="manifest" href="./manifest.webmanifest?v=12" />
     <link rel="icon" href="./icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,7 +22,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=11" />
+    <link rel="stylesheet" href="./styles.css?v=12" />
   </head>
   <body>
     <header class="site-header">
@@ -67,7 +67,7 @@
             <span class="note-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></svg>
             </span>
-            <span><strong>Cálculo transparente</strong> baseado na área × valor atual por m²</span>
+            <span><strong>Cálculo automático</strong> com o valor interno definido pela equipe</span>
           </div>
         </div>
 
@@ -130,8 +130,8 @@
               <svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5C7 5.6 9.1 5 12 5s5 1 5 3-2 3-5 3-5 1-5 3 2.2 5 5 5 5-.7 5-2.5" /></svg>
             </span>
             <div>
-              <h3>Veja o valor atual</h3>
-              <p>O preço por m² é definido e atualizado pela equipe Steel &amp; Co.</p>
+              <h3>Use o valor vigente</h3>
+              <p>O valor interno é definido e atualizado pela equipe Steel &amp; Co.</p>
             </div>
           </article>
           <article>
@@ -154,11 +154,11 @@
             Preencha a área total que pretende construir. O resultado é uma estimativa inicial;
             o orçamento final depende das especificações do projeto.
           </p>
-          <div class="price-status" id="priceStatus" aria-live="polite">
+          <div class="price-status configured">
             <span class="status-dot"></span>
             <div>
-              <small>VALOR DO METRO QUADRADO</small>
-              <strong id="publicPrice">Aguardando configuração</strong>
+              <small>REFERÊNCIA DA ESTIMATIVA</small>
+              <strong>Valor interno atualizado pela equipe</strong>
             </div>
           </div>
         </div>
@@ -193,8 +193,8 @@
             <strong class="result-total" id="resultTotal">R$ 0,00</strong>
             <div class="formula-row">
               <span id="formulaArea">0 m²</span>
-              <span aria-hidden="true">×</span>
-              <span id="formulaPrice">R$ 0,00 / m²</span>
+              <span aria-hidden="true">·</span>
+              <span>valor interno vigente</span>
             </div>
             <div class="result-divider"></div>
             <p>
@@ -356,6 +356,6 @@
 
     <div class="pwa-toast" id="pwaStatus" role="status" aria-live="polite" hidden></div>
 
-    <script src="./app.js?v=11"></script>
+    <script src="./app.js?v=12"></script>
   </body>
 </html>

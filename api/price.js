@@ -15,6 +15,7 @@ export default async function handler(request, response) {
 
   if (request.method === "GET") {
     try {
+      await requireEmployee(request);
       const result = await pool.query(
         `SELECT square_meter_price, updated_at
            FROM public.pricing_settings
@@ -28,8 +29,8 @@ export default async function handler(request, response) {
           : Number(row.square_meter_price),
         updatedAt: row?.updated_at || null,
       });
-    } catch {
-      return response.status(503).json({ error: "O valor do m² está temporariamente indisponível." });
+    } catch (error) {
+      return sendAccessError(response, error);
     }
   }
 

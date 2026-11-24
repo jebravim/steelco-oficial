@@ -1,7 +1,6 @@
 import { createAuthClient } from "@neon/auth";
 
 const AUTH_URL = "https://ep-muddy-unit-bb5hu0pg.neonauth.c-15.us-east-1.aws.neon.tech/steelco/auth";
-const PRICE_CACHE_KEY = "steelco-square-meter-price-cache";
 const authClient = createAuthClient(AUTH_URL);
 
 const moneyFormatter = new Intl.NumberFormat("pt-BR", {
@@ -31,7 +30,6 @@ const elements = {
   estimateForm: document.querySelector("#estimateForm"),
   estimateResult: document.querySelector("#estimateResult"),
   formulaArea: document.querySelector("#formulaArea"),
-  formulaPrice: document.querySelector("#formulaPrice"),
   heroMetric: document.querySelector("#heroMetric"),
   installApp: document.querySelector("#installApp"),
   newPassword: document.querySelector("#newPassword"),
@@ -39,8 +37,6 @@ const elements = {
   passwordResetPanel: document.querySelector("#passwordResetPanel"),
   priceError: document.querySelector("#priceError"),
   priceForm: document.querySelector("#priceForm"),
-  priceStatus: document.querySelector("#priceStatus"),
-  publicPrice: document.querySelector("#publicPrice"),
   pwaStatus: document.querySelector("#pwaStatus"),
   requestResetError: document.querySelector("#requestResetError"),
   requestResetForm: document.querySelector("#requestResetForm"),
@@ -67,8 +63,6 @@ const elements = {
   unauthorizedSignOut: document.querySelector("#unauthorizedSignOut"),
 };
 
-let configuredPrice = null;
-let priceState = "loading";
 let lastFocusedElement = null;
 let deferredInstallPrompt = null;
 let pwaToastTimer = null;
@@ -85,70 +79,6 @@ function parseBrazilianNumber(value) {
 
   const parsed = Number(cleaned);
   return Number.isFinite(parsed) ? parsed : NaN;
-}
-
-function readCachedPrice() {
-  try {
-    const cached = Number(localStorage.getItem(PRICE_CACHE_KEY));
-    return Number.isFinite(cached) && cached > 0 ? cached : null;
-  } catch {
-    return null;
-  }
-}
-
-function cachePrice(price) {
-  try {
-    if (price === null) localStorage.removeItem(PRICE_CACHE_KEY);
-    else localStorage.setItem(PRICE_CACHE_KEY, String(price));
-  } catch {
-    // O cache local é apenas uma conveniência offline; o banco continua sendo a fonte oficial.
-  }
-}
-
-function updatePriceUI() {
-  const hasPrice = configuredPrice !== null;
-  elements.calculateButton.disabled = !hasPrice;
-  elements.priceStatus.classList.toggle("configured", hasPrice);
-
-  if (priceState === "loading") {
-    elements.publicPrice.textContent = "Carregando valor atual…";
-  } else if (hasPrice) {
-    const suffix = priceState === "cached" ? " · último valor salvo" : "";
-    elements.publicPrice.textContent = `${moneyFormatter.format(configuredPrice)} / m²${suffix}`;
-  } else if (priceState === "error") {
-    elements.publicPrice.textContent = "Valor indisponível no momento";
-  } else {
-    elements.publicPrice.textContent = "Aguardando configuração da equipe";
-  }
-
-  elements.squareMeterPrice.value = hasPrice
-    ? configuredPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : "";
-}
-
-async function loadPrice() {
-  priceState = "loading";
-  updatePriceUI();
-
-  try {
-    const response = await fetch("/api/price", {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Falha ao carregar o valor.");
-
-    configuredPrice = Number.isFinite(Number(data.price)) && Number(data.price) > 0
-      ? Number(data.price)
-      : null;
-    priceState = "ready";
-    cachePrice(configuredPrice);
-  } catch {
-    configuredPrice = readCachedPrice();
-    priceState = configuredPrice === null ? "error" : "cached";
-  }
-
-  updatePriceUI();
 }
 
 function setEmployeeView(view) {
@@ -176,6 +106,28 @@ function showEmployee(employee, fallbackEmail = "") {
   elements.employeeIdentity.textContent = employee?.name || employee?.email || fallbackEmail;
   setEmployeeView("employee");
   window.setTimeout(() => elements.squareMeterPrice.focus(), 20);
+}
+
+async function loadEmployeePrice(token) {
+  const response = await fetch("/api/price", {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(data.error || "Não foi possível carregar o valor do m².");
+    error.status = response.status;
+    throw error;
+  }
+
+  const price = Number(data.price);
+  elements.squareMeterPrice.value = Number.isFinite(price) && price > 0
+    ? price.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : "";
 }
 
 async function getAuthToken() {
@@ -226,6 +178,7 @@ async function verifyEmployee(user, loginToken = null) {
     throw error;
   }
 
+  await loadEmployeePrice(token);
   showEmployee(data.employee, user.email);
 }
 
@@ -270,11 +223,9 @@ function closeEmployeeModal() {
   if (lastFocusedElement) lastFocusedElement.focus();
 }
 
-function showEstimate(area) {
-  const total = area * configuredPrice;
+function showEstimate(area, total) {
   elements.resultTotal.textContent = moneyFormatter.format(total);
   elements.formulaArea.textContent = `${numberFormatter.format(area)} m²`;
-  elements.formulaPrice.textContent = `${moneyFormatter.format(configuredPrice)} / m²`;
   elements.heroMetric.textContent = `${numberFormatter.format(area)} m² · ${moneyFormatter.format(total)}`;
   elements.estimateForm.hidden = true;
   elements.estimateResult.hidden = false;
@@ -321,14 +272,9 @@ function backToSignIn() {
   setAuthMode("signin");
 }
 
-elements.estimateForm.addEventListener("submit", (event) => {
+elements.estimateForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   elements.areaError.textContent = "";
-
-  if (!configuredPrice) {
-    elements.areaError.textContent = "A equipe ainda precisa configurar o valor do m².";
-    return;
-  }
 
   const area = parseBrazilianNumber(elements.area.value);
   if (!Number.isFinite(area) || area <= 0) {
@@ -343,7 +289,27 @@ elements.estimateForm.addEventListener("submit", (event) => {
     return;
   }
 
-  showEstimate(area);
+  setFormPending(elements.estimateForm, true);
+  try {
+    const response = await fetch("/api/estimate", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ area }),
+    });
+    const data = await response.json();
+    if (!response.ok || !Number.isFinite(Number(data.total))) {
+      throw new Error(data.error || "Não foi possível calcular a estimativa agora.");
+    }
+
+    showEstimate(Number(data.area) || area, Number(data.total));
+  } catch (error) {
+    elements.areaError.textContent = error.message || "Não foi possível calcular a estimativa agora.";
+  } finally {
+    setFormPending(elements.estimateForm, false);
+  }
 });
 
 elements.signInForm.addEventListener("submit", async (event) => {
@@ -375,6 +341,7 @@ elements.signInForm.addEventListener("submit", async (event) => {
     }
 
     activeAuthToken = data.token;
+    await loadEmployeePrice(data.token);
     showEmployee(data.employee, email);
     elements.signInPassword.value = "";
   } catch (error) {
@@ -505,10 +472,10 @@ elements.priceForm.addEventListener("submit", async (event) => {
       throw error;
     }
 
-    configuredPrice = Number(data.price);
-    priceState = "ready";
-    cachePrice(configuredPrice);
-    updatePriceUI();
+    elements.squareMeterPrice.value = Number(data.price).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     elements.savedFeedback.hidden = false;
     window.setTimeout(closeEmployeeModal, 1250);
   } catch (error) {
@@ -554,7 +521,7 @@ document.addEventListener("keydown", (event) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=11").catch(() => {
+    navigator.serviceWorker.register("./sw.js?v=12").catch(() => {
       showPwaStatus("O modo offline não pôde ser ativado neste navegador.");
     });
   });
@@ -588,5 +555,3 @@ window.addEventListener("appinstalled", () => {
   showPwaStatus("Aplicativo instalado com sucesso.");
 });
 
-updatePriceUI();
-loadPrice();
